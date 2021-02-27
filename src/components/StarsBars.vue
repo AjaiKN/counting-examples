@@ -64,6 +64,11 @@
 				Restart
 			</button>
 		</div>
+		<div v-if="!isPlaying" style="padding: 1rem">
+			<button type="button" @click="next()" style="font-size: 15px">
+				Next
+			</button>
+		</div>
 	</div>
 </template>
 
