@@ -19,13 +19,55 @@
 			</my-text>
 		</svg>
 	</div>
+
+	<div
+		style="
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			flex-direction: column;
+			font-size: 20px;
+		"
+	>
+		<div style="padding: 1rem">
+			<label>
+				Number of stars <br />
+				<input
+					type="range"
+					v-model.number="numStars"
+					:min="4"
+					:max="15"
+					style="width: 20rem"
+				/>
+			</label>
+		</div>
+		<div style="padding: 1rem">
+			<label>
+				Number of groups <br />
+				<input
+					type="range"
+					v-model.number="numGroups"
+					:min="1"
+					:max="numStars"
+					style="width: 20rem"
+				/>
+			</label>
+		</div>
+		<div style="padding: 1rem">
+			<button type="button" @click="restart" style="font-size: 15px">
+				Restart
+			</button>
+		</div>
+	</div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, defineProps } from 'vue'
+import { ref, computed, watch } from 'vue'
 import MyText from './MyText.vue'
 
-const props = defineProps<{ numStars: number }>()
+const numStars = ref(15)
+const numGroups = ref(4)
+const numBars = computed(() => numGroups.value - 1)
 
 const TIME_BETWEEN = 0.8
 
@@ -34,30 +76,31 @@ function range(n: number) {
 }
 
 const stars = computed(() =>
-	range(props.numStars).map((i) => ({ x: 32 + i * 12 }))
+	range(numStars.value).map((i) => ({ x: 32 + i * 12 }))
 )
-const barIndices = ref([0, 1, 5])
+const barIndices = ref(range(numBars.value))
+function restart() {
+	barIndices.value = range(numBars.value)
+}
+restart()
+watch(numBars, () => restart())
+
 const bars = computed(() =>
 	barIndices.value.map((i) => ({ x: 32 + i * 12 + 6 }))
 )
 
-function* barIndicesGenerator() {
-	for (let i = 0; i < props.numStars - 1; i++) {
-		for (let j = i + 1; j < props.numStars - 1; j++) {
-			for (let k = j + 1; k < props.numStars - 1; k++) {
-				yield [i, j, k]
-			}
+function next(index = numBars.value - 1) {
+	const maxIndex = numStars.value - 1 - (numBars.value - index)
+	barIndices.value[index]++
+	if (barIndices.value[index] > maxIndex) {
+		if (index === 0) {
+			barIndices.value[index]--
+		} else {
+			next(index - 1)
+			barIndices.value[index] = barIndices.value[index - 1] + 1
 		}
 	}
 }
-
-let gen = barIndicesGenerator()
-
-function next() {
-	const newVal = gen.next().value
-	if (newVal != null) barIndices.value = newVal
-}
-next()
 setInterval(() => {
 	next()
 }, TIME_BETWEEN * 1000)
