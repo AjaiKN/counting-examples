@@ -69,6 +69,10 @@ const numStars = ref(15)
 const numGroups = ref(4)
 const numBars = computed(() => numGroups.value - 1)
 
+watch(numStars, () => {
+	numGroups.value = Math.min(numGroups.value, numStars.value)
+})
+
 const TIME_BETWEEN = 0.8
 
 function range(n: number) {
