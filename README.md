@@ -7,3 +7,5 @@ Running the code for development
 3. Run the command `npm run dev`
 
 For a production build, run `npm run build`
+
+The code in this repo is MIT licensed, but one of its dependencies, [gsap](https://greensock.com/gsap/), [is not](https://greensock.com/licensing/).
