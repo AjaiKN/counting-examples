@@ -31,11 +31,11 @@
 	>
 		<div style="padding: 1rem">
 			<label>
-				Number of stars <br />
+				Number of stars: {{ numStars }} <br />
 				<input
 					type="range"
 					v-model.number="numStars"
-					:min="4"
+					:min="3"
 					:max="15"
 					style="width: 20rem"
 				/>
@@ -43,17 +43,24 @@
 		</div>
 		<div style="padding: 1rem">
 			<label>
-				Number of groups <br />
+				Number of groups: {{ numGroups }} <br />
 				<input
 					type="range"
 					v-model.number="numGroups"
-					:min="1"
+					:min="2"
 					:max="numStars"
 					style="width: 20rem"
 				/>
 			</label>
 		</div>
 		<div style="padding: 1rem">
+			<button
+				type="button"
+				@click="isPlaying = !isPlaying"
+				style="font-size: 15px"
+			>
+				{{ isPlaying ? 'Pause' : 'Play' }}
+			</button>
 			<button type="button" @click="restart" style="font-size: 15px">
 				Restart
 			</button>
@@ -72,8 +79,6 @@ const numBars = computed(() => numGroups.value - 1)
 watch(numStars, () => {
 	numGroups.value = Math.min(numGroups.value, numStars.value)
 })
-
-const TIME_BETWEEN = 0.8
 
 function range(n: number) {
 	return [...Array(n).keys()]
@@ -105,7 +110,25 @@ function next(index = numBars.value - 1) {
 		}
 	}
 }
-setInterval(() => {
-	next()
-}, TIME_BETWEEN * 1000)
+
+let timeout: number
+function start() {
+	timeout = setTimeout(() => {
+		next()
+		start()
+	}, speed.value * 1000)
+}
+
+const isPlaying = ref(true)
+const speed = ref(0.8)
+watch(
+	[isPlaying, speed],
+	([playing]) => {
+		if (timeout != null) clearTimeout(timeout)
+		if (playing) {
+			start()
+		}
+	},
+	{ immediate: true }
+)
 </script>
