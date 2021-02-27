@@ -14,6 +14,7 @@
 	>
 		+
 	</my-text>
+	<my-text :x="240 - 12" :y="20">= {{ numStars }}</my-text>
 </template>
 
 <script setup lang="ts">
