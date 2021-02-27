@@ -3,20 +3,7 @@
 		<svg viewBox="0 0 240 30">
 			<my-text v-for="{ x } in stars" :x="x" :y="10">*</my-text>
 			<my-text v-for="{ x } in bars" :x="x" :y="9">|</my-text>
-			<my-text
-				v-for="ind in range(barIndices.length + 1)"
-				:x="50 + 40 * ind"
-				:y="20"
-			>
-				{{ (barIndices[ind] ?? numStars - 1) - (barIndices[ind - 1] ?? -1) }}
-			</my-text>
-			<my-text
-				v-for="ind in range(barIndices.length)"
-				:x="50 + 40 * ind + 20"
-				:y="20"
-			>
-				+
-			</my-text>
+			<AdditionStuff :bar-indices="barIndices" :num-stars="numStars" />
 		</svg>
 	</div>
 
@@ -83,7 +70,9 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, provide, readonly } from 'vue'
+import range from '../range'
 import MyText from './MyText.vue'
+import AdditionStuff from './AdditionStuff.vue'
 
 const numStars = ref(15)
 const numGroups = ref(4)
@@ -92,10 +81,6 @@ const numBars = computed(() => numGroups.value - 1)
 watch(numStars, () => {
 	numGroups.value = Math.min(numGroups.value, numStars.value)
 })
-
-function range(n: number) {
-	return [...Array(n).keys()]
-}
 
 const stars = computed(() =>
 	range(numStars.value).map((i) => ({ x: 32 + i * 12 }))
