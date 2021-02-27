@@ -87,7 +87,7 @@ function restart() {
 	barIndices.value = range(numBars.value)
 }
 restart()
-watch(numBars, () => restart())
+watch([numBars, numStars], () => restart())
 
 const bars = computed(() =>
 	barIndices.value.map((i) => ({ x: 32 + i * 12 + 6 }))
