@@ -14,7 +14,7 @@ import type { ComputedRef } from 'vue'
 import { useTweened } from '../useTweened'
 
 const speed = inject<ComputedRef<number>>('speed')!
-const duration = computed(() => 1 / speed.value / 2)
+const duration = computed(() => 1 / speed.value / 3)
 
 const props = defineProps<{ x: number; y: number }>()
 
