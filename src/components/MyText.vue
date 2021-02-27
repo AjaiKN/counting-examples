@@ -9,19 +9,21 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps } from 'vue'
+import { computed, defineProps, inject } from 'vue'
+import type { ComputedRef } from 'vue'
 import { useTweened } from '../useTweened'
 
-const duration = 0.4
+const speed = inject<ComputedRef<number>>('speed')!
+const duration = computed(() => 1 / speed.value / 2)
 
 const props = defineProps<{ x: number; y: number }>()
 
 const tweenedX = useTweened(
 	computed(() => props.x),
-	{ duration }
+	() => ({ duration: duration.value })
 )
 const tweenedY = useTweened(
 	computed(() => props.y),
-	{ duration }
+	() => ({ duration: duration.value })
 )
 </script>

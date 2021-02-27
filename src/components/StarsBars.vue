@@ -54,6 +54,19 @@
 			</label>
 		</div>
 		<div style="padding: 1rem">
+			<label>
+				Speed: {{ speed }} <br />
+				<input
+					type="range"
+					v-model.number="speed"
+					:min="0"
+					:max="20"
+					step="any"
+					style="width: 20rem"
+				/>
+			</label>
+		</div>
+		<div style="padding: 1rem">
 			<button
 				type="button"
 				@click="isPlaying = !isPlaying"
@@ -69,7 +82,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, provide, readonly } from 'vue'
 import MyText from './MyText.vue'
 
 const numStars = ref(15)
@@ -111,16 +124,19 @@ function next(index = numBars.value - 1) {
 	}
 }
 
+const speed = ref(1 / 0.8)
+provide('speed', readonly(speed))
+
 let timeout: number
 function start() {
+	if (speed.value === 0) return
 	timeout = setTimeout(() => {
 		next()
 		start()
-	}, speed.value * 1000)
+	}, (1 / speed.value) * 1000)
 }
 
 const isPlaying = ref(true)
-const speed = ref(0.8)
 watch(
 	[isPlaying, speed],
 	([playing]) => {
