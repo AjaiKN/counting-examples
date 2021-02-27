@@ -8,7 +8,7 @@
 				:x="50 + 40 * ind"
 				:y="20"
 			>
-				{{ (barIndices[ind] ?? 14) - (barIndices[ind - 1] ?? -1) }}
+				{{ (barIndices[ind] ?? numStars - 1) - (barIndices[ind - 1] ?? -1) }}
 			</my-text>
 			<my-text
 				v-for="ind in range(barIndices.length)"
