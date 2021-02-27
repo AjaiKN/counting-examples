@@ -69,6 +69,9 @@
 				Next
 			</button>
 		</div>
+		<p>
+			<a href="https://github.com/Aurelius333/counting-examples">Source code</a>
+		</p>
 	</div>
 </template>
 
