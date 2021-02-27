@@ -1,5 +1,11 @@
 <template>
-	<my-text v-for="{ x } in stars" :x="x" :y="10">*</my-text>
+	<my-text
+		v-for="{ x, groupNum } in stars"
+		:x="x"
+		:y="10"
+		:color="colors[groupNum]"
+		>*</my-text
+	>
 	<my-text v-for="{ x } in bars" :x="x" :y="9">|</my-text>
 </template>
 
@@ -7,6 +13,7 @@
 import { computed, defineProps } from 'vue'
 import MyText from './MyText.vue'
 import range from '../range'
+import colors from '../colors'
 
 const props = defineProps<{ numStars: number; barIndices: number[] }>()
 
@@ -17,6 +24,7 @@ const end = width - beginning
 const stars = computed(() =>
 	range(props.numStars).map((i) => ({
 		x: beginning + (end - beginning) * (i / (props.numStars - 1)),
+		groupNum: [...props.barIndices, Infinity].findIndex((num) => num >= i),
 	}))
 )
 

@@ -4,6 +4,7 @@
 		:y="tweenedY"
 		dominant-baseline="middle"
 		text-anchor="middle"
+		:style="{ fill: color ?? 'white' }"
 		><slot
 	/></text>
 </template>
@@ -16,7 +17,7 @@ import { useTweened } from '../useTweened'
 const speed = inject<ComputedRef<number>>('speed')!
 const duration = computed(() => 1 / speed.value / 3)
 
-const props = defineProps<{ x: number; y: number }>()
+const props = defineProps<{ x: number; y: number; color?: string }>()
 
 const tweenedX = useTweened(
 	computed(() => props.x),

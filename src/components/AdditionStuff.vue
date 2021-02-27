@@ -3,6 +3,7 @@
 		v-for="ind in range(barIndices.length + 1)"
 		:x="beginning + dist * ind"
 		:y="20"
+		:color="colors[ind]"
 	>
 		{{ (barIndices[ind] ?? numStars - 1) - (barIndices[ind - 1] ?? -1) }}
 	</my-text>
@@ -19,6 +20,7 @@
 import { computed, defineProps } from 'vue'
 import MyText from './MyText.vue'
 import range from '../range'
+import colors from '../colors'
 
 const props = defineProps<{ barIndices: number[]; numStars: number }>()
 
