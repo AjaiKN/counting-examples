@@ -1,5 +1,5 @@
 <template>
-	<StarsBars />
+	<StarsBars :numStars="15" />
 </template>
 
 <script setup lang="ts">

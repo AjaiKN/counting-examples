@@ -22,26 +22,29 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, reactive, watch } from 'vue'
+import { ref, computed, defineProps } from 'vue'
 import MyText from './MyText.vue'
 
-const TIME_BETWEEN = 2
+const props = defineProps<{ numStars: number }>()
+
+const TIME_BETWEEN = 0.8
 
 function range(n: number) {
 	return [...Array(n).keys()]
 }
 
-const stars = range(15).map((i) => ({ x: 32 + i * 12 }))
+const stars = computed(() =>
+	range(props.numStars).map((i) => ({ x: 32 + i * 12 }))
+)
 const barIndices = ref([0, 1, 5])
 const bars = computed(() =>
 	barIndices.value.map((i) => ({ x: 32 + i * 12 + 6 }))
 )
 
 function* barIndicesGenerator() {
-	const len = 15
-	for (let i = 0; i < len - 1; i++) {
-		for (let j = i + 1; j < len - 1; j++) {
-			for (let k = j + 1; k < len - 1; k++) {
+	for (let i = 0; i < props.numStars - 1; i++) {
+		for (let j = i + 1; j < props.numStars - 1; j++) {
+			for (let k = j + 1; k < props.numStars - 1; k++) {
 				yield [i, j, k]
 			}
 		}
