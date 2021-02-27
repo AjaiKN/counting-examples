@@ -1,8 +1,7 @@
 <template>
 	<div style="background-color: black">
 		<svg viewBox="0 0 240 30">
-			<my-text v-for="{ x } in stars" :x="x" :y="10">*</my-text>
-			<my-text v-for="{ x } in bars" :x="x" :y="9">|</my-text>
+			<RenderStarsBars :bar-indices="barIndices" :num-stars="numStars" />
 			<AdditionStuff :bar-indices="barIndices" :num-stars="numStars" />
 		</svg>
 	</div>
@@ -71,7 +70,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, provide, readonly } from 'vue'
 import range from '../range'
-import MyText from './MyText.vue'
+import RenderStarsBars from './RenderStarsBars.vue'
 import AdditionStuff from './AdditionStuff.vue'
 
 const numStars = ref(15)
@@ -82,27 +81,12 @@ watch(numStars, () => {
 	numGroups.value = Math.min(numGroups.value, numStars.value)
 })
 
-const width = 240
-const beginning = 32
-const end = width - beginning
-const stars = computed(() =>
-	range(numStars.value).map((i) => ({
-		x: beginning + (end - beginning) * (i / (numStars.value - 1)),
-	}))
-)
-
 const barIndices = ref(range(numBars.value))
 function restart() {
 	barIndices.value = range(numBars.value)
 }
 restart()
 watch([numBars, numStars], () => restart())
-
-const bars = computed(() =>
-	barIndices.value.map((i) => ({
-		x: beginning + (end - beginning) * ((i + 0.5) / (numStars.value - 1)),
-	}))
-)
 
 function next(index = numBars.value - 1) {
 	const maxIndex = numStars.value - 1 - (numBars.value - index)
