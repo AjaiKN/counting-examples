@@ -1,8 +1,21 @@
 <template>
 	<div style="background-color: black">
-		<svg viewBox="0 0 240 30">
+		<svg viewBox="0 0 240 50">
 			<RenderStarsBars :bar-indices="barIndices" :num-stars="numStars" />
 			<AdditionStuff :bar-indices="barIndices" :num-stars="numStars" />
+
+			<MyText :x="40" :y="40">Count:</MyText>
+			<MyText :x="60" :y="40">{{ count }}</MyText>
+
+			<MyText :x="117" :y="40" :size="16">(</MyText>
+			<MyText :x="140" :y="36">{{ numStars }} - 1 gaps</MyText>
+			<MyText :x="140" :y="44">{{ numGroups }} - 1 bars</MyText>
+			<MyText :x="163" :y="40" :size="16">)</MyText>
+			<MyText :x="200" :y="40">
+				= {{ numPossibilities }} possibilit{{
+					numPossibilities == 1 ? 'y' : 'ies'
+				}}
+			</MyText>
 		</svg>
 	</div>
 
@@ -80,6 +93,7 @@ import { ref, computed, watch, provide, readonly } from 'vue'
 import range from '../range'
 import RenderStarsBars from './RenderStarsBars.vue'
 import AdditionStuff from './AdditionStuff.vue'
+import MyText from './MyText.vue'
 
 const numStars = ref(15)
 const numGroups = ref(4)
@@ -89,24 +103,34 @@ watch(numStars, () => {
 	numGroups.value = Math.min(numGroups.value, numStars.value)
 })
 
+const count = ref(1)
+
 const barIndices = ref(range(numBars.value))
 function restart() {
 	barIndices.value = range(numBars.value)
+	count.value = 1
 }
 restart()
 watch([numBars, numStars], () => restart())
 
-function next(index = numBars.value - 1) {
+function moveBarForward(index: number) {
 	const maxIndex = numStars.value - 1 - (numBars.value - index)
 	barIndices.value[index]++
 	if (barIndices.value[index] > maxIndex) {
 		if (index === 0) {
+			// it's done, so undo the change and the count incrementing
 			barIndices.value[index]--
+			count.value--
 		} else {
-			next(index - 1)
+			moveBarForward(index - 1)
 			barIndices.value[index] = barIndices.value[index - 1] + 1
 		}
 	}
+}
+
+function next() {
+	moveBarForward(numBars.value - 1)
+	count.value++
 }
 
 const speed = ref(1 / 0.8)
@@ -131,5 +155,20 @@ watch(
 		}
 	},
 	{ immediate: true }
+)
+
+function combinations(n: number, r: number) {
+	let ret = 1
+	for (let i = n; i > r; i--) {
+		ret *= i
+	}
+	for (let i = 1; i <= n - r; i++) {
+		ret /= i
+	}
+	return ret
+}
+
+const numPossibilities = computed(() =>
+	combinations(numStars.value - 1, numGroups.value - 1)
 )
 </script>
