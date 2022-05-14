@@ -28,6 +28,10 @@
 			font-size: 20px;
 		"
 	>
+		<h1 style="font-size: 1.5em">
+			How many ways are there to add {{ numGroups }} natural numbers together to
+			get {{ numStars }}?
+		</h1>
 		<div style="padding: 1rem">
 			<label>
 				Number of stars: {{ numStars }} <br />
